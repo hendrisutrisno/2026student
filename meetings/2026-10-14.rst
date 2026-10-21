@@ -1,0 +1,34 @@
+Research Check-in - 2026-10-14
+==============================
+
+:Student: Student Name
+:Meeting Date: 2026-10-14
+:Meeting Type: Regular Meeting
+
+1. Progress Since Last Meeting
+------------------------------
+
+- Learned how to prepare a research meeting note.
+- Prepared an example reStructuredText document.
+
+2. Findings and Learning
+------------------------
+
+- This is a **sample** note for testing the encrypted meeting page.
+- Replace the sample with actual records only inside a private student repository.
+
+3. Challenges and Questions
+---------------------------
+
+- What evidence should be attached to each research update?
+
+4. Proposed Next Steps
+----------------------
+
+- Set up a reproducible research project folder.
+- Write the first research question.
+
+5. Meeting Notes and Decisions
+------------------------------
+
+- No real meeting took place; this is demonstration content.
