@@ -1,0 +1,31 @@
+---
+layout: default
+title: Regular Meetings
+permalink: /meetings/
+---
+
+<div class="eyebrow">RESEARCH CHECK-INS</div>
+<h1 class="page-heading">Regular Meetings</h1>
+<p class="lead narrow">Meeting records for {{ site.student.name | escape }}. Each note should be prepared before the meeting and completed with decisions afterward.</p>
+
+<div class="info-strip"><strong>Preparation:</strong> Submit sections 1–4 at least 24 hours before the meeting. Add section 5 after the discussion. Each meeting record is encrypted and requires a password to open.</div>
+
+{% assign dates = site.data.meetings %}
+{% if dates and dates.size > 0 %}
+<ul class="meeting-list">
+{% for date in dates %}
+  {% assign note_path = '/meetings/' | append: date | append: '.html' %}
+  <li>
+    <a href="{{ note_path | relative_url }}">
+      <span class="meeting-icon" aria-hidden="true">&#128274;</span>
+      <span class="meeting-main"><strong>{{ date | escape }}</strong><small>Regular research meeting &middot; password required</small></span>
+      <span class="meeting-arrow" aria-hidden="true">&#8594;</span>
+    </a>
+  </li>
+{% endfor %}
+</ul>
+{% else %}
+  <div class="empty-state">No meeting notes have been added yet. Add <code>meetings/YYYY-MM-DD.rst</code> to the private source repository.</div>
+{% endif %}
+
+<p class="backlink"><a href="{{ '/' | relative_url }}">&#8592; Back to research journey</a></p>

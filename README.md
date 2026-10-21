@@ -1,70 +1,97 @@
-# CSDI Lab — Graduate Research Journey (2026student)
+# CSDI Lab — Graduate Research Journey (student template)
 
-A minimal, reusable GitHub Pages/Jekyll template for one student's research journey.
+A public **student journey** site, with a public **regular meeting date list** and password-protected meeting pages generated from editable reStructuredText (`.rst`) files. Each student's **research code, notebooks, and source meeting notes** belong in their **private copy** of this repository.
 
-- **Homepage:** student profile and four-semester graduate journey.
-- **Regular Meetings:** a date-index page generated automatically from `.rst` files.
-- **Meeting file:** clicking a date opens the corresponding `.rst` document in GitHub's rendered viewer.
+## How this is secured
 
-## 1. Make this repository reusable (for the lab owner)
+- Only `docs/` is compiled into the public website using GitHub Actions.
+- Original meeting files live at the repository root in `meetings/YYYY-MM-DD.rst`, **outside `docs/`**.
+- Each `.rst` source is converted to HTML and encrypted using AES-256-GCM. The key is derived with PBKDF2-HMAC-SHA256 using a fresh random salt. The public page contains only encrypted content and a password form.
+- The public `/meetings/` page lists dates and links to encrypted meeting pages.
+- The Actions secret `MEETING_PASSWORD` is required; a missing secret causes the build to **fail rather than publish plaintext**.
+- Research source and results should live in `research/`, outside `docs/`. The site does not link to them.
 
-1. Create `hendrisutrisno/2026student` and upload these files to the repository root.
-2. Under **Settings > General**, enable **Template repository**.
-3. For each student, select **Use this template > Create a new repository** and name it, for example, `2026verin` (all lowercase is recommended).
-4. Keep the **Owner** as `hendrisutrisno` if the public site should be at `hendrisutrisno.github.io/2026verin/`.
-5. Add that student as a collaborator with permission to edit files; the lab owner retains repository administration.
-6. Enable the site at **Settings > Pages > Build and deployment > Deploy from a branch > main > /(root)**.
+**The public template itself is for demonstration:** the example `.rst` is visible to anyone browsing this public repository. A password does not hide repository source. For real research notes and code, create a **private** student repository.
 
-**Important:** GitHub requires admin permissions to rename an existing repository. A student with ordinary write access can edit files but typically cannot rename a repository. Selecting the desired repository name at creation avoids that issue.
+**Use a long, unique password for each real student repository.** `hope` is the requested **demonstration password only**, and is not suitable for protecting confidential research.
 
-## 2. What a student must edit
+## 1. First-time setup of this public `2026student` template
 
-Open `_config.yml` and change:
+1. In **Settings > Secrets and variables > Actions > New repository secret**, set:
+   - Name: `MEETING_PASSWORD`
+   - Value: `hope` (demo only)
+2. In **Settings > Pages > Build and deployment**, change **Source** from *Deploy from a branch* to **GitHub Actions**.
+3. Open **Actions > Publish graduate journey > Run workflow** (or push a commit).
+4. Confirm the Pages deployment is successful.
+5. Open `https://hendrisutrisno.github.io/2026student/` and click **Regular meetings > 2026-10-21**. Enter `hope`.
 
-```yaml
-baseurl: "/2026verin" # must equal the new repository name, including case
-student:
-  name: "Verin"
-  degree: "Master's Student"
-  lab: "CSDI Lab"
-  university: "National Taipei University of Technology"
-  joined: "2026"
-  interests: "My research interests"
-  summary: "One or two sentences about my graduate research journey."
+The password is **not stored in** `_config.yml`, `.rst`, JavaScript, or the public workflow file. GitHub injects it securely during the build.
+
+## 2. Creating a student's private repository
+
+1. Mark `2026student` as a **Template repository** in **Settings > General**.
+2. Click **Use this template** and create a new **private** repository such as `2026verin`, owned by `hendrisutrisno`.
+3. Invite the student as a collaborator. Keep administrative access for the supervisor.
+4. Update **`docs/_config.yml`**, especially:
+
+   ```yaml
+   baseurl: "/2026verin"
+   student:
+     name: "Verin"
+     degree: "Master's Student"
+     lab: "CSDI Lab"
+     university: "National Taipei University of Technology"
+     joined: "2026"
+     interests: "To be updated"
+   ```
+5. In the new repository, set **its own** `MEETING_PASSWORD` Actions secret to a strong password (template repositories **do not copy** secrets).
+6. Under **Settings > Pages**, choose **GitHub Actions**.
+7. Run **Publish graduate journey** in Actions.
+8. Remove/replace the sample `meetings/2026-10-21.rst` with the student's own record.
+
+With GitHub Pro, a private personal repository can publish a public GitHub Pages website. The **published website is not private**; its meeting pages use encryption to protect their content.
+
+## 3. Adding a regular meeting
+
+1. Copy `_templates/regular-meeting.rst` into `meetings/YYYY-MM-DD.rst` (e.g. `meetings/2026-10-28.rst`).
+2. Complete sections 1–4 at least 24 hours before the meeting. Complete section 5 afterwards.
+3. Commit to the private student's `main` branch.
+4. GitHub Actions automatically regenerates the public date index and encrypts each note at an address such as `https://hendrisutrisno.github.io/2026verin/meetings/2026-10-28.html`.
+
+Do **not** move `.rst` files into `docs/`, because that would expose them on the public Pages site. Do **not** put research code or results inside `docs/`.
+
+## 4. Folder layout
+
+```text
+2026student/
+├── .github/workflows/publish.yml      # build/deploy encrypted meeting pages
+├── docs/                              # only folder released to the public website
+│   ├── _config.yml
+│   ├── _layouts/default.html
+│   ├── _data/meetings.json             # overwritten by workflow
+│   ├── assets/style.css
+│   ├── index.md                        # public student homepage
+│   └── meetings/index.html             # public date list
+├── meetings/                          # .rst sources; private in student repo
+│   └── 2026-10-21.rst                  # harmless sample in public template
+├── research/                           # private experiments/code (add in student repos)
+├── scripts/build_protected_meetings.py
+├── _templates/regular-meeting.rst
+└── README.md
 ```
 
-`github_owner` and `url` remain unchanged when the repo is hosted under `hendrisutrisno`. All GitHub repository and `.rst` links are calculated from `github_owner` and `baseurl` automatically, so **you do not have to edit meeting URLs**. If you choose a different GitHub owner, update `github_owner` and `url` as well.
+Encrypted HTML pages are **created in the GitHub Actions runner** during publication and do not need to be committed to GitHub.
 
-## 3. Add a regular meeting
+## 5. If the page does not publish
 
-1. Copy `_templates/regular-meeting.rst` to `meetings/YYYY-MM-DD.rst`, using the actual meeting date (e.g. `meetings/2026-10-28.rst`).
-2. Fill in progress, observations, questions, and next steps **at least 24 hours before the meeting**.
-3. Commit to `main`.
-4. After the meeting, update the decisions and agreed actions in the same file.
+- Go to **Actions** and open the failed **Publish graduate journey** workflow.
+- If it reports `Missing MEETING_PASSWORD`, create the Actions repository secret.
+- Confirm **Settings > Pages > Source** is **GitHub Actions**, not *Deploy from a branch*.
+- Confirm that the student's `docs/_config.yml` `baseurl` exactly matches the repository name.
 
-Jekyll scans `meetings/*.rst` and lists dates in **newest-first order**. Empty repositories show a short message until the first meeting is added. The file names should be ISO formatted, `YYYY-MM-DD.rst`, so alphabetical order matches chronological order.
+## 6. Security limitations
 
-The live links will be:
-
-- Student homepage: `https://hendrisutrisno.github.io/2026verin/`
-- Meeting dates: `https://hendrisutrisno.github.io/2026verin/meetings/`
-- GitHub-rendered record: `https://github.com/hendrisutrisno/2026verin/blob/main/meetings/2026-10-28.rst`
-
-## 4. Link from the lab's website
-
-Add a member link such as:
-
-```html
-<a href="https://hendrisutrisno.github.io/2026verin/">Verin — Research Journey</a>
-```
-
-## 5. Public visibility and confidentiality
-
-**Only publish meeting notes approved for public disclosure.** In this setup, the `.rst` files are in the GitHub Pages source and may be copied into the published website, in addition to being visible on GitHub. Do not put confidential supervision feedback, unpublished manuscripts, personal information, proprietary data, or protected research results in this public repository. Keep confidential materials in a separately controlled, private location.
-
-## Technical notes
-
-- GitHub Pages supports the Jekyll/Liquid static-file listing used here; no script or database is required to update the meeting index.
-- `.rst` files are linked directly to GitHub's rendered file viewer, rather than being converted by Jekyll into HTML pages.
-- The `_templates` folder is excluded from the deployed site.
-- GitHub does **not** automatically redirect old **project-site** URLs after repository renaming. Update links if the repository name changes later.
+- `hope` is only a demonstration password: a short common word is vulnerable to offline guessing of encrypted static content. Use a strong, unique secret for real records.
+- Anyone with access to the private source repository can read the original `.rst` files without entering the site password; this is expected.
+- Password-protected static HTML does not offer account-based access control, individual revocation, or protection against a person who has already decrypted or downloaded the page.
+- Treat confidential industrial data, human-subject data, and unpublished manuscripts according to applicable access and publication rules. Encryption of a public page does not override those obligations.
