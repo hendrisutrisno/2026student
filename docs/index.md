@@ -36,7 +36,14 @@ title: Graduate Research Journey
   </div>
 </section>
 
-<section class="cta-card" aria-labelledby="meetings-title">
-  <div><span class="eyebrow">ONGOING RESEARCH</span><h2 id="meetings-title">Regular Meetings</h2><p>Brief research check-ins submitted before each supervision meeting. Each date opens a password-protected meeting record derived from a private <code>.rst</code> file.</p></div>
-  <a class="secondary-link" href="{{ '/meetings/' | relative_url }}">View meeting records &#8594;</a>
+<section class="cta-card" aria-labelledby="showcase-title">
+  <div>
+    <span class="eyebrow">SHOWCASE</span>
+    <h2 id="showcase-title">Research Showcase</h2>
+    <p>
+      Selected research projects, demonstrations,
+      publications, and achievements can be
+      featured here as they become available.
+    </p>
+  </div>
 </section>
