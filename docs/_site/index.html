@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Student 王小明 - Graduate Research Journey at CSDI Lab, NTUT">
+  <title>Graduate Research Journey | Student 王小明</title>
+  <script>
+    (function() {
+      var saved = localStorage.getItem('theme');
+      var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      document.documentElement.setAttribute('data-theme', saved || (prefersDark ? 'dark' : 'light'));
+    })();
+  </script>
+  <link rel="stylesheet" href="/2026student/assets/style.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <div class="shell">
+    <header class="site-header">
+      <a class="brand" href="/2026student/"><span class="brand-mark">C</span> CSDI Lab <span class="brand-light">/ Student Journey</span></a>
+      <nav aria-label="Primary navigation">
+        <a href="/2026student/">Home</a>
+        <button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark/light mode" title="Toggle theme"><i class="theme-icon" aria-hidden="true"></i></button>
+      </nav>
+    </header>
+    <main id="main"><div class="eyebrow">GRADUATE RESEARCH JOURNEY</div>
+
+<section class="hero">
+  <div>
+    <span class="pill">Master&#39;s Student</span>
+    <h1>Student 王小明</h1>
+    <p class="lead">My graduate research journey: building skills, exploring questions, and developing research independence.</p>
+    <div class="metadata">
+      <span><strong>Affiliation:</strong> CSDI Lab · NTUT</span>
+      <span><strong>Joined:</strong> 2026</span>
+      <span><strong>Research interests:</strong> To be determined</span>
+    </div>
+    <a class="primary-link" href="/2026student/meetings/">Browse regular meetings <span aria-hidden="true">&#8594;</span></a>
+  </div>
+  <div class="hero-graphic" aria-hidden="true"><div class="orb one"></div><div class="orb two"></div><div class="orb three"></div><span class="hero-monogram">S</span></div>
+</section>
+
+<section class="content-section" aria-labelledby="journey-title">
+  <div class="section-title">
+    <div>
+      <span class="eyebrow">ACADEMIC DEVELOPMENT</span>
+      <h2 id="journey-title">My Research Journey</h2>
+    </div>
+    <p>Four broad stages guide my master's study. They can evolve as my research progresses.</p>
+  </div>
+  <div class="timeline">
+    <article class="stage"><span class="stage-no">01</span><div><div class="stage-period">Semester 1</div><h3>Building foundations</h3><p>Python, statistical learning, literature review, and reproducible analysis.</p></div></article>
+    <article class="stage"><span class="stage-no">02</span><div><div class="stage-period">Semester 2</div><h3>Defining a research problem</h3><p>Research questions, baseline models, and initial experiments.</p></div></article>
+    <article class="stage"><span class="stage-no">03</span><div><div class="stage-period">Semester 3</div><h3>Developing and validating methods</h3><p>Method improvement, evaluation, and research communication.</p></div></article>
+    <article class="stage"><span class="stage-no">04</span><div><div class="stage-period">Semester 4</div><h3>Thesis and research outputs</h3><p>Thesis writing, defense, and future research directions.</p></div></article>
+  </div>
+</section>
+
+<section class="cta-card" aria-labelledby="showcase-title">
+  <div>
+    <span class="eyebrow">SHOWCASE</span>
+    <h2 id="showcase-title">Research Showcase</h2>
+    <p>
+      Selected research projects, demonstrations,
+      publications, and achievements can be
+      featured here as they become available.
+    </p>
+  </div>
+</section>
+</main>
+    <footer class="site-footer">
+      <span>Student 王小明 &middot; CSDI Lab &middot; National Taipei University of Technology</span>
+      <span>Updated through GitHub</span>
+    </footer>
+  </div>
+  <script>
+    (function() {
+      var button = document.getElementById('theme-toggle');
+      button.addEventListener('click', function() {
+        var current = document.documentElement.getAttribute('data-theme');
+        var next = current === 'dark' ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', next);
+        localStorage.setItem('theme', next);
+      });
+    })();
+  </script>
+</body>
+</html>

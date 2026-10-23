@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Regular Meeting - 2026-10-21 | Protected Research Check-in</title>
+  <script>
+(function() {
+  var saved = localStorage.getItem("theme");
+  var prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+  document.documentElement.setAttribute("data-theme", saved || (prefersDark ? "dark" : "light"));
+})();
+</script>
+  <link rel="stylesheet" href="../assets/style.css">
+  <style>
+    * {box-sizing:border-box}
+    body {min-height:100vh;margin:0;display:grid;place-items:center;padding:20px}
+    .card {background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:36px;max-width:440px;width:100%;box-shadow:0 8px 40px rgba(0,0,0,.12)}
+    .theme-control {position:fixed;top:18px;right:20px}
+    .theme-control .theme-toggle {margin:0}
+    .eyebrow {font-size:12px;letter-spacing:.1em;font-weight:750;color:var(--accent)}
+    h1 {font-size:25px;line-height:1.25;margin:16px 0 10px}
+    p {font-size:14px;color:var(--muted);line-height:1.6;margin:0 0 20px}
+    label {display:block;font-weight:650;font-size:14px;margin-bottom:8px}
+    input {display:block;width:100%;border:1px solid var(--border-strong);border-radius:8px;padding:12px;font:inherit;background:var(--surface-2);color:var(--ink)}
+    input:focus {outline:2px solid var(--accent);outline-offset:1px}
+    #button {background:var(--accent);color:white;border:0;border-radius:8px;padding:12px 16px;font-size:15px;font-weight:700;cursor:pointer;margin-top:14px;width:100%}
+    #button:hover {background:var(--accent-dark)}
+    #button:disabled {opacity:.6;cursor:wait}
+    .back {display:block;margin-top:22px;color:var(--accent);font-size:13px}
+    #error {color:var(--error);font-size:13px;min-height:1.2em;margin-top:12px}
+  </style>
+</head>
+<body>
+  <div class="theme-control"><button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark/light mode" title="Toggle theme"><i class="theme-icon" aria-hidden="true"></i></button></div>
+  <div class="card">
+    <div class="eyebrow">CSDI LAB &middot; RESEARCH CHECK-IN</div>
+    <h1>Regular Meeting - 2026-10-21</h1>
+    <p>This meeting record is password-protected.</p>
+    <form id="unlock">
+      <label for="password">Meeting password</label>
+      <input id="password" type="password" autocomplete="current-password" required autofocus>
+      <button id="button" type="submit">Unlock meeting note</button>
+      <div id="error" role="alert" aria-live="polite"></div>
+    </form>
+    <a class="back" href="./">&larr; Back to regular meetings</a>
+  </div>
+<script>
+"use strict";
+const encryptedNote = {"salt":"NyrJtnPJrzGOgifSrkIrfQ==","iv":"TQUh9b25Mr2YCN6W","ciphertext":"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","iterations":310000};
+const textEncoder = new TextEncoder();
+function fromB64(s) {
+  return Uint8Array.from(atob(s), c => c.charCodeAt(0));
+}
+async function decryptNote(password) {
+  const baseKey = await crypto.subtle.importKey("raw", textEncoder.encode(password), "PBKDF2", false, ["deriveKey"]);
+  const key = await crypto.subtle.deriveKey(
+    {name:"PBKDF2", salt:fromB64(encryptedNote.salt), iterations:encryptedNote.iterations, hash:"SHA-256"},
+    baseKey, {name:"AES-GCM",length:256}, false, ["decrypt"]
+  );
+  const data = await crypto.subtle.decrypt(
+    {name:"AES-GCM",iv:fromB64(encryptedNote.iv),additionalData:textEncoder.encode("csdi-meeting-v1")},
+    key,fromB64(encryptedNote.ciphertext)
+  );
+  return new TextDecoder("utf-8",{fatal:true}).decode(data);
+}
+document.getElementById("unlock").addEventListener("submit",async function(event) {
+  event.preventDefault();
+  const button=document.getElementById("button");
+  const error=document.getElementById("error");
+  button.disabled=true;
+  error.textContent="";
+  try {
+    if (!crypto.subtle) throw new Error("HTTPS required for secure decryption.");
+    const contents=await decryptNote(document.getElementById("password").value);
+    document.open();document.write(contents);document.close();
+  } catch (e) {
+    error.textContent=e.message.includes("HTTPS required")?e.message:"Incorrect password or unreadable note.";
+    button.disabled=false;
+  }
+});
+</script>
+<script>
+(function() {
+  var button = document.getElementById("theme-toggle");
+  if (!button) return;
+  button.addEventListener("click", function() {
+    var current = document.documentElement.getAttribute("data-theme");
+    var next = current === "dark" ? "light" : "dark";
+    document.documentElement.setAttribute("data-theme", next);
+    localStorage.setItem("theme", next);
+  });
+})();
+</script>
+</body>
+</html>
