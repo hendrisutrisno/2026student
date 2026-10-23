@@ -1,10 +1,10 @@
 # Graduate Research Journey — student site configuration
 # When creating a student's own repository, edit the name and baseurl below.
 title: Graduate Research Journey
-url: "https://hendrisutrisno.github.io"
-baseurl: "/2026student"  # Change ONLY the last part to the student's repo name, e.g. /2026verin
+url: "https://xindrahardjo.github.io"
+baseurl: "/2026student-template"  # Change ONLY the last part to the student's repo name, e.g. /2026verin
 
-github_owner: "hendrisutrisno"
+github_owner: "xIndRahardjo"
 repository_branch: "main"
 
 student:
