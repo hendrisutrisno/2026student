@@ -19,10 +19,14 @@ import secrets
 import subprocess
 import sys
 
+from html.parser import HTMLParser
+from urllib.parse import unquote, urlsplit
+
 from cryptography.hazmat.primitives.ciphers.aead import AESGCM
 
 REPO = Path(__file__).resolve().parents[1]
 SOURCES = REPO / "meetings"
+MEETING_MEDIA = SOURCES / "assets"
 PUBLIC = REPO / "docs"
 PUBLIC_NOTES = PUBLIC / "meetings"
 DATA = PUBLIC / "_data"
@@ -30,6 +34,15 @@ ITERATIONS = 310_000
 AAD = b"csdi-meeting-v1"
 DATE_NAME = re.compile(r"\d{4}-\d{2}-\d{2}\.rst\Z")
 HTML_NAME = re.compile(r"\d{4}-\d{2}-\d{2}\.html\Z")
+MAX_IMAGE_BYTES = 8 * 1024 * 1024
+IMAGE_MIME_TYPES = {
+    ".gif": "image/gif",
+    ".jpeg": "image/jpeg",
+    ".jpg": "image/jpeg",
+    ".png": "image/png",
+    ".svg": "image/svg+xml",
+    ".webp": "image/webp",
+}
 THEME_BOOTSTRAP = '''<script>
 (function() {
   var saved = localStorage.getItem("theme");
@@ -55,6 +68,86 @@ def b64(data: bytes) -> str:
     return base64.b64encode(data).decode("ascii")
 
 
+def encrypted_image_uri(source_note: Path, src: str) -> str:
+    """Return an encrypted-note-safe data URI for a private meeting image."""
+    uri = urlsplit(src)
+    if uri.scheme or uri.netloc or uri.query or uri.fragment:
+        raise ValueError(f"Image source must be a local file under meetings/assets: {src}")
+
+    media_root = MEETING_MEDIA.resolve()
+    image_path = (source_note.parent / unquote(uri.path)).resolve()
+    try:
+        image_path.relative_to(media_root)
+    except ValueError as exc:
+        raise ValueError(f"Image source must stay under meetings/assets: {src}") from exc
+
+    mime_type = IMAGE_MIME_TYPES.get(image_path.suffix.lower())
+    if not mime_type:
+        allowed = ", ".join(sorted(IMAGE_MIME_TYPES))
+        raise ValueError(f"Unsupported meeting image type: {src}. Use {allowed}.")
+    if not image_path.is_file():
+        raise ValueError(f"Meeting image not found: {src}")
+
+    image = image_path.read_bytes()
+    if len(image) > MAX_IMAGE_BYTES:
+        raise ValueError(f"Meeting image is larger than {MAX_IMAGE_BYTES // (1024 * 1024)} MiB: {src}")
+    return f"data:{mime_type};base64,{b64(image)}"
+
+
+class PrivateImageInliner(HTMLParser):
+    """Inline rendered RST images so their bytes are covered by AES-GCM."""
+
+    def __init__(self, source_note: Path) -> None:
+        super().__init__(convert_charrefs=False)
+        self.source_note = source_note
+        self.output: list[str] = []
+
+    def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
+        self._write_tag(tag, attrs)
+
+    def handle_startendtag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
+        self._write_tag(tag, attrs, closed=True)
+
+    def _write_tag(self, tag: str, attrs: list[tuple[str, str | None]], closed: bool = False) -> None:
+        self.output.append(f"<{tag}")
+        for name, value in attrs:
+            if tag.lower() == "img" and name.lower() == "src" and value is not None:
+                value = encrypted_image_uri(self.source_note, value)
+            if value is None:
+                self.output.append(f" {name}")
+            else:
+                self.output.append(f' {name}="{html.escape(value, quote=True)}"')
+        self.output.append(" />" if closed else ">")
+
+    def handle_endtag(self, tag: str) -> None:
+        self.output.append(f"</{tag}>")
+
+    def handle_data(self, data: str) -> None:
+        self.output.append(data)
+
+    def handle_entityref(self, name: str) -> None:
+        self.output.append(f"&{name};")
+
+    def handle_charref(self, name: str) -> None:
+        self.output.append(f"&#{name};")
+
+    def handle_comment(self, data: str) -> None:
+        self.output.append(f"<!--{data}-->")
+
+    def handle_decl(self, decl: str) -> None:
+        self.output.append(f"<!{decl}>")
+
+    def handle_pi(self, data: str) -> None:
+        self.output.append(f"<?{data}>")
+
+
+def inline_private_images(source_note: Path, rendered_html: str) -> str:
+    parser = PrivateImageInliner(source_note)
+    parser.feed(rendered_html)
+    parser.close()
+    return "".join(parser.output)
+
+
 def render_rst(path: Path) -> str:
     text = path.read_text(encoding="utf-8")
     try:
@@ -63,10 +156,11 @@ def render_rst(path: Path) -> str:
         # Convenient for local preview where pandoc is already installed.
         if not __import__("shutil").which("pandoc"):
             raise SystemExit("Install docutils: python -m pip install docutils")
-        return subprocess.check_output(
+        rendered = subprocess.check_output(
             ["pandoc", "--from=rst", "--to=html", "--standalone=false"],
             input=text.encode("utf-8"),
         ).decode("utf-8")
+        return inline_private_images(path, rendered)
     parts = publish_parts(
         source=text,
         writer_name="html5",
@@ -78,7 +172,7 @@ def render_rst(path: Path) -> str:
             "syntax_highlight": "none",
         },
     )
-    return parts["html_body"]
+    return inline_private_images(path, parts["html_body"])
 
 
 def note_document(label: str, inner: str) -> str:
@@ -100,6 +194,8 @@ def note_document(label: str, inner: str) -> str:
     .note-body h2 {{font-size:1.35rem;margin-top:2em}}
     .note-body pre {{overflow-x:auto;background:var(--surface-2);border:1px solid var(--border);padding:1rem;border-radius:8px}}
     .note-body img {{max-width:100%}}
+    .note-body figure {{margin:1.8em 0;text-align:center}}
+    .note-body figcaption {{color:var(--muted);font-size:0.9em;margin-top:8px}}
     .note-body table {{display:block;overflow-x:auto}}
   </style>
 </head>
@@ -216,6 +312,7 @@ def main() -> None:
 
     PUBLIC_NOTES.mkdir(parents=True, exist_ok=True)
     DATA.mkdir(parents=True, exist_ok=True)
+    MEETING_MEDIA.mkdir(parents=True, exist_ok=True)
 
     paths = sorted(SOURCES.glob("*.rst")) if SOURCES.exists() else []
     dates = []
@@ -235,7 +332,11 @@ def main() -> None:
             previous.unlink()
 
     for path in paths:
-        doc = note_document(path.stem, render_rst(path))
+        try:
+            rendered_note = render_rst(path)
+        except ValueError as exc:
+            raise SystemExit(f"{path.name}: {exc}") from exc
+        doc = note_document(path.stem, rendered_note)
         locked = encrypted_page(path.stem, doc, password)
         (PUBLIC_NOTES / (path.stem + ".html")).write_text(locked, encoding="utf-8")
 

@@ -5,6 +5,21 @@ Research Check-in - YYYY-MM-DD
 :Meeting Date: YYYY-MM-DD
 :Meeting Type: Regular Meeting
 
+Private Research Figure / Meeting Photo (Optional)
+--------------------------------------------------
+
+Store the image under ``meetings/assets/`` and use a relative path. The build
+embeds it in the encrypted note; it is not published as a separate public file.
+
+Example::
+
+   .. figure:: assets/YYYY-MM-DD-figure.png
+      :alt: Describe what the image shows
+      :width: 720px
+      :align: center
+
+      A short caption for this figure or photo.
+
 1. Progress Since Last Meeting
 ------------------------------
 

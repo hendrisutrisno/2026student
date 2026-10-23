@@ -6,6 +6,7 @@ A public **student journey** site, with a public **regular meeting date list** a
 
 - Only `docs/` is compiled into the public website using GitHub Actions.
 - Original meeting files live at the repository root in `meetings/YYYY-MM-DD.rst`, **outside `docs/`**.
+- Private meeting figures and photos are stored in `meetings/assets/` (**outside `docs/`**). They are automatically base64-embedded and encrypted directly within the note's ciphertext. No unencrypted image files are ever published to GitHub Pages.
 - Each `.rst` source is converted to HTML and encrypted using AES-256-GCM. The key is derived with PBKDF2-HMAC-SHA256 using a fresh random salt. The public page contains only encrypted content and a password form.
 - The public `/meetings/` page lists dates and links to encrypted meeting pages.
 - The Actions secret `MEETING_PASSWORD` is required; a missing secret causes the build to **fail rather than publish plaintext**.
