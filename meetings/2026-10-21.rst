@@ -5,6 +5,15 @@ Research Check-in - 2026-10-21
 :Meeting Date: 2026-10-21
 :Meeting Type: Regular Meeting
 
+
+.. image:: assets/2026-10-21-sample.png
+   :alt: Model architecture diagram
+   :width: 100%
+   :align: center
+
+   sample image for tester
+
+
 1. Progress Since Last Meeting
 ------------------------------
 
