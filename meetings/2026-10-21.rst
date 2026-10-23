@@ -6,9 +6,9 @@ Research Check-in - 2026-10-21
 :Meeting Type: Regular Meeting
 
 
-.. image:: assets/2026-10-21-sample.png
-   :alt: Model architecture diagram
-   :width: 100%
+.. figure:: assets/2026-10-21-sample.png
+   :alt: image sample
+   :width: 720px
    :align: center
 
    sample image for tester
