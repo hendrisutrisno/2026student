@@ -18,7 +18,12 @@ Research Check-in - 2026-10-21
 ------------------------------
 
 - Learned how to prepare a research meeting note.
-- Prepared an example reStructuredText document.
+- Prepared an example reStructuredText document with math equations:
+  Inline formula :math:`\mathbf{x} \in \mathbb{R}^n` and state space representation:
+
+  .. math::
+
+     \mathbf{x}_{t+1} = A \mathbf{x}_t + B \mathbf{u}_t
 
 2. Findings and Learning
 ------------------------

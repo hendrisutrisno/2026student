@@ -1,0 +1,9 @@
+.DS_Store
+__pycache__/
+*.pyc
+_site/
+.jekyll-cache/
+.sass-cache/
+.bundle/
+# Generated when building encrypted meeting pages. Do not commit public HTML output.
+docs/meetings/[0-9]*.html

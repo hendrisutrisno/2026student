@@ -59,7 +59,20 @@ With GitHub Pro, a private personal repository can publish a public GitHub Pages
 3. Commit to the private student's `main` branch.
 4. GitHub Actions automatically regenerates the public date index and encrypts each note at an address such as `https://hendrisutrisno.github.io/2026verin/meetings/2026-10-28.html`.
 
-Do **not** move `.rst` files into `docs/`, because that would expose them on the public Pages site. Do **not** put research code or results inside `docs/`.
+### Meeting rules & security
+
+- **Never move `.rst` files into `docs/`**: Source meeting notes must stay in `meetings/` (outside `docs/`). Only encrypted HTML is published.
+- **Private meeting photos**: Store photos in `meetings/assets/` (not in `docs/`). Reference them in `.rst` via `.. figure:: assets/photo.jpg`. The build automatically embeds them as encrypted base64 data URIs directly inside the ciphertext. Max 8 MB per image (`.png`, `.jpg`, `.jpeg`, `.webp`, `.gif`).
+- **Math equations**: You can write LaTeX equations natively:
+  - Inline: `:math:`E = mc^2``
+  - Block equation:
+    ```rst
+    .. math::
+
+       \mathbf{x}_{t+1} = A \mathbf{x}_t + B \mathbf{u}_t
+    ```
+  MathJax 3 renders them with LaTeX typography once unlocked.
+- **Do not commit generated files**: Never commit `_site/`, `.jekyll-cache/`, or generated `docs/meetings/*.html` to GitHub. GitHub Actions generates them securely during build.
 
 ## 4. Folder layout
 

@@ -1,11 +1,11 @@
 # Graduate Research Journey — student site configuration
 # When creating a student's own repository, edit the name and baseurl below.
 title: Graduate Research Journey
-url: "https://xindrahardjo.github.io"
-baseurl: "/2026student-template"  # Change ONLY the last part to the student's repo name, e.g. /2026verin
+url: "https://hendrisutrisno.github.io"
+baseurl: "/2026student"
 
 student:
-  name: "Prisilia Kartin" #name change in here
+  name: "Jane Doe" #name change in here
   degree: "PhD's Student" #degree example
   lab: "CSDI Lab"
   university: "National Taipei University of Technology"
@@ -14,3 +14,7 @@ student:
   summary: "My graduate research journey: building skills, exploring questions, and developing research independence."
 
 markdown: kramdown
+exclude:
+  - _site/
+  - .jekyll-cache/
+  - .sass-cache/

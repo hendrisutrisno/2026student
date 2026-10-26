@@ -18,7 +18,6 @@ import re
 import secrets
 import subprocess
 import sys
-
 from html.parser import HTMLParser
 from urllib.parse import unquote, urlsplit
 
@@ -40,7 +39,6 @@ IMAGE_MIME_TYPES = {
     ".jpeg": "image/jpeg",
     ".jpg": "image/jpeg",
     ".png": "image/png",
-    ".svg": "image/svg+xml",
     ".webp": "image/webp",
 }
 THEME_BOOTSTRAP = '''<script>
@@ -157,7 +155,7 @@ def render_rst(path: Path) -> str:
         if not __import__("shutil").which("pandoc"):
             raise SystemExit("Install docutils: python -m pip install docutils")
         rendered = subprocess.check_output(
-            ["pandoc", "--from=rst", "--to=html", "--standalone=false"],
+            ["pandoc", "--from=rst", "--to=html", "--mathjax", "--standalone=false"],
             input=text.encode("utf-8"),
         ).decode("utf-8")
         return inline_private_images(path, rendered)
@@ -170,6 +168,7 @@ def render_rst(path: Path) -> str:
             "report_level": 4,
             "halt_level": 6,
             "syntax_highlight": "none",
+            "math_output": "mathjax",
         },
     )
     return inline_private_images(path, parts["html_body"])
@@ -194,10 +193,24 @@ def note_document(label: str, inner: str) -> str:
     .note-body h2 {{font-size:1.35rem;margin-top:2em}}
     .note-body pre {{overflow-x:auto;background:var(--surface-2);border:1px solid var(--border);padding:1rem;border-radius:8px}}
     .note-body img {{max-width:100%}}
-    .note-body figure {{margin:1.8em 0;text-align:center}}
-    .note-body figcaption {{color:var(--muted);font-size:0.9em;margin-top:8px}}
     .note-body table {{display:block;overflow-x:auto}}
+    .note-body figcaption {{color:var(--muted)}}
+    .note-body .math {{overflow-x:auto;max-width:100%}}
+    mjx-container {{overflow-x:auto;overflow-y:hidden;max-width:100%}}
   </style>
+  <script>
+    window.MathJax = {{
+      tex: {{
+        inlineMath: [['$', '$'], ['\\\\(', '\\\\)']],
+        displayMath: [['$$', '$$'], ['\\\\[', '\\\\]']],
+        processEscapes: true
+      }},
+      options: {{
+        skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }}
+    }};
+  </script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 </head>
 <body>
   <main class="shell note-body" style="padding-top:38px;padding-bottom:75px">
@@ -238,17 +251,18 @@ def encrypted_page(label: str, plaintext: str, password: str) -> str:
     .card {{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:36px;max-width:440px;width:100%;box-shadow:0 8px 40px rgba(0,0,0,.12)}}
     .theme-control {{position:fixed;top:18px;right:20px}}
     .theme-control .theme-toggle {{margin:0}}
-    .eyebrow {{font-size:12px;letter-spacing:.1em;font-weight:750;color:var(--accent)}}
+    .eyebrow {{font-size:12px;letter-spacing:.1em;font-weight:750;color:var(--teal, var(--accent, #176d69))}}
     h1 {{font-size:25px;line-height:1.25;margin:16px 0 10px}}
     p {{font-size:14px;color:var(--muted);line-height:1.6;margin:0 0 20px}}
     label {{display:block;font-weight:650;font-size:14px;margin-bottom:8px}}
-    input {{display:block;width:100%;border:1px solid var(--border-strong);border-radius:8px;padding:12px;font:inherit;background:var(--surface-2);color:var(--ink)}}
-    input:focus {{outline:2px solid var(--accent);outline-offset:1px}}
-    #button {{background:var(--accent);color:white;border:0;border-radius:8px;padding:12px 16px;font-size:15px;font-weight:700;cursor:pointer;margin-top:14px;width:100%}}
-    #button:hover {{background:var(--accent-dark)}}
+    input {{display:block;width:100%;border:1px solid var(--border-2, var(--border-strong, #b0c4c2));border-radius:8px;padding:12px;font:inherit;background:var(--surface-2);color:var(--ink)}}
+    input:focus {{outline:2px solid var(--teal, var(--accent, #176d69));outline-offset:1px}}
+    #button {{background:var(--teal, var(--accent, #176d69));color:white;border:0;border-radius:8px;padding:12px 16px;font-size:15px;font-weight:700;cursor:pointer;margin-top:14px;width:100%}}
+    #button:hover {{background:var(--teal-dark, var(--accent-dark, #0b5753))}}
     #button:disabled {{opacity:.6;cursor:wait}}
-    .back {{display:block;margin-top:22px;color:var(--accent);font-size:13px}}
-    #error {{color:var(--error);font-size:13px;min-height:1.2em;margin-top:12px}}
+    .back {{display:block;margin-top:22px;color:var(--teal, var(--accent, #176d69));font-size:13px}}
+    #error {{color:var(--pink, var(--error, #e06080));font-size:13px;min-height:1.2em;margin-top:12px}}
+    @media (max-width:480px) {{.card {{padding:28px 22px}} .theme-control {{top:13px;right:14px}}}}
   </style>
 </head>
 <body>
@@ -312,7 +326,6 @@ def main() -> None:
 
     PUBLIC_NOTES.mkdir(parents=True, exist_ok=True)
     DATA.mkdir(parents=True, exist_ok=True)
-    MEETING_MEDIA.mkdir(parents=True, exist_ok=True)
 
     paths = sorted(SOURCES.glob("*.rst")) if SOURCES.exists() else []
     dates = []

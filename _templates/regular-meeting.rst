@@ -1,55 +1,60 @@
-Research Check-in - YYYY-MM-DD
+Research Check-in — YYYY-MM-DD
 ==============================
 
-:Student: STUDENT_NAME
-:Meeting Date: YYYY-MM-DD
-:Meeting Type: Regular Meeting
+:Student: YOUR_NAME
+:Date: YYYY-MM-DD
+:Meeting: Regular Check-in
 
-Private Research Figure / Meeting Photo (Optional)
---------------------------------------------------
+Private Meeting Photo (Optional)
+--------------------------------
 
 Store the image under ``meetings/assets/`` and use a relative path. The build
 embeds it in the encrypted note; it is not published as a separate public file.
 
 Example::
 
-   .. figure:: assets/YYYY-MM-DD-figure.png
+   .. figure:: assets/YYYY-MM-DD-photo.jpg
       :alt: Describe what the image shows
       :width: 720px
       :align: center
 
-      A short caption for this figure or photo.
+      A short caption for this meeting photo.
 
-1. Progress Since Last Meeting
-------------------------------
+1. Since Our Last Meeting
+-------------------------
 
-- Completed or attempted:
-- Evidence (links to code, figures, or documents):
+- What did I try or finish?
+- Evidence (code, notebook, figure, or a link to an internal file):
 
-2. Findings and Learning
-------------------------
+.. Tip: You can include math equations!
+.. Inline math: :math:`E = mc^2`
+.. Block equation:
+.. .. math::
+..
+..    \mathbf{x}_{t+1} = A \mathbf{x}_t + B \mathbf{u}_t
 
-- What did I observe or learn?
-- Why does it matter?
-
-3. Challenges and Questions
----------------------------
-
-- What is unclear or not working?
-- What have I already tried?
-- What feedback or decision do I need?
-
-4. Proposed Next Steps
+2. One Thing I Learned
 ----------------------
 
-- Task 1:
-- Task 2:
+- A finding, a new skill, or something I now understand better:
 
-5. Meeting Notes and Decisions
-------------------------------
+3. Questions for the Meeting
+----------------------------
 
-(To be completed after the meeting.)
+- What is unclear?
+- What feedback or decision would help me move forward?
 
-- Main decisions:
-- Agreed actions:
+4. My Next Small Steps
+----------------------
+
+- Step 1:
+- Step 2:
+
+5. After the Meeting
+--------------------
+
+(To be completed after we meet.)
+
+- Decisions and feedback:
+- Agreed next steps:
 - Next meeting:
