@@ -33,7 +33,7 @@ title: Graduate Research Journey
       <span class="eyebrow">ACADEMIC DEVELOPMENT</span>
       <h2 id="journey-title">My Research Journey</h2>
     </div>
-    <p>Four broad stages guide my master's study. Manage each semester simply by editing its markdown file in <code>docs/_semesters/</code>.</p>
+    <p>Four broad stages guide my master's study.</p>
   </div>
   <div class="timeline">
     {% assign semesters = site.semesters | sort: "order" %}
@@ -64,7 +64,7 @@ title: Graduate Research Journey
       <span class="eyebrow">SHOWCASE</span>
       <h2 id="showcase-title">Research Showcase</h2>
     </div>
-    <p>Featured research projects, tools, and publications. Add items by dropping a markdown file into <code>docs/_showcases/</code>.</p>
+    <p>Featured research projects, tools, and publications.</p>
   </div>
 
   <div class="showcase-grid">
