@@ -4,9 +4,24 @@ title: Graduate Research Journey
 url: "https://hendrisutrisno.github.io"
 baseurl: "/2026student"
 
+collections:
+  semesters:
+    output: false
+  showcases:
+    output: true
+    permalink: /showcase/:name/
+
+defaults:
+  - scope:
+      path: ""
+      type: showcases
+    values:
+      layout: default
+
 student:
-  name: "Jane Doe" #name change in here
-  degree: "PhD's Student" #degree example
+  name: "Jane Doe" # name change in here
+  degree: "Master's Student" # degree example
+  # photo: /assets/photos/profile-sample.png # Optional: uncomment and add your photo in docs/assets/photos/
   lab: "CSDI Lab"
   university: "National Taipei University of Technology"
   joined: "2026"

@@ -4,12 +4,27 @@ title: Graduate Research Journey
 url: "https://hendrisutrisno.github.io"
 baseurl: "/2026student"
 
+collections:
+  semesters:
+    output: false
+  showcases:
+    output: true
+    permalink: /showcase/:name/
+
+defaults:
+  - scope:
+      path: ""
+      type: showcases
+    values:
+      layout: default
+
 github_owner: "hendrisutrisno"
 repository_branch: "main"
 
 student:
   name: "Student Name"  # e.g. Verin
   degree: "Master's Student"
+  # photo: /assets/photos/profile-sample.png # Optional: uncomment and add your photo in docs/assets/photos/
   lab: "CSDI Lab"
   university: "National Taipei University of Technology"
   joined: "2026"
