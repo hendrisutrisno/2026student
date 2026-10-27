@@ -56,6 +56,9 @@ def check_site(directory: Path, origin: str, baseurl: str) -> None:
     for p, doc in docs.items():
         route = prefix + '/' + p.relative_to(directory).as_posix()
         for value in doc.links:
+            # The lab homepage is a separate Pages site on the same host.
+            if value == 'https://hendrisutrisno.github.io/':
+                continue
             if not value or value.startswith(('data:', 'mailto:', 'tel:', 'javascript:')):
                 continue
             target = urlsplit(urljoin(origin + route, value))
