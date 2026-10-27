@@ -1,5 +1,6 @@
 # Graduate Research Journey — student site configuration
-# When creating a student's own repository, edit the name and baseurl below.
+# Edit the student profile here. GitHub Pages supplies url and baseurl when publishing.
+# Set url and baseurl below for local preview.
 title: Graduate Research Journey
 url: "https://hendrisutrisno.github.io"
 baseurl: "/2026student"
@@ -19,8 +20,9 @@ defaults:
       layout: default
 
 student:
-  name: "Jane Doe" # name change in here
-  degree: "Master's Student" # degree example
+  name: "Your Full Name"
+  email: "your.email@example.com" # Replace with your address, or leave empty to hide.
+  degree: "Master's Student"
   # photo: /assets/photos/profile-sample.png # Optional: uncomment and add your photo in docs/assets/photos/
   lab: "CSDI Lab"
   university: "National Taipei University of Technology"
@@ -33,3 +35,5 @@ exclude:
   - _site/
   - .jekyll-cache/
   - .sass-cache/
+  - _templates/
+  - assets/photos/README.md

@@ -1,18 +1,26 @@
 ---
 order: 1
-title: "Your Project or Research Title"
+title: "Your project title"
 date: 2026-10-01
 tags:
-  - "Machine Learning"
-  - "Computer Vision"
-  - "Conference 2026"
-image: /assets/photos/your-showcase-image.png   # Optional
-summary: "A 2–3 sentence overview of the research problem, methodology, and key results."
-links:
-  - label: "Code Repository"
-    url: "https://github.com/yourusername/project"
-  - label: "Read Paper"
-    url: "https://arxiv.org/abs/..."
+  - "Your research topic"
+# image: /assets/photos/your-project.png
+summary: "State the research question, method, and current progress in two or three sentences."
+links: []
+# Replace links: [] with real, public links when they are ready:
+# links:
+#   - label: "Code"
+#     url: "https://github.com/YOUR-USERNAME/YOUR-PROJECT"
 ---
 
-Write longer research notes, detailed results, equations, and figures here if you'd like a dedicated project page.
+## Research question
+
+Describe the problem and why it matters.
+
+## Method and progress
+
+Describe what you have done. Separate planned work from completed results.
+
+## Next step
+
+State the next experiment or task. Share only approved public information.

@@ -1,24 +1,31 @@
 ---
 order: 2
-title: "Autonomous Sensor Calibration Toolkit"
+title: "Example: Sensor calibration toolkit"
 date: 2026-10-15
 tags:
+  - "Example project"
   - "ROS 2"
   - "Robotics"
-  - "Open Source"
 image: /assets/photos/showcase-project-2.png
-summary: "A lightweight ROS 2 package for automated extrinsic calibration between LiDAR and RGB stereo camera arrays in our CSDI lab."
-links:
-  - label: "GitHub Repo"
-    url: "https://github.com/"
-  - label: "Video Demo"
-    url: "#"
+summary: "This example shows how to present a planned tool for camera and LiDAR calibration. Replace it with your own project, progress, and verified public links."
+links: []
 ---
 
-# Autonomous Sensor Calibration Toolkit
+## Example project
 
-An open-source toolkit designed to streamline LiDAR-camera extrinsic calibration for lab experimental rigs.
+This is fictional demonstration content, not a released CSDI Lab software package.
 
-## Features
-- Fully automated target detection using ArUco-LiDAR cross-modality patterns.
-- ROS 2 node architecture with zero manual point-cloud matching required.
+## Research question
+
+How can a calibration tool reduce the work needed to align camera and LiDAR data?
+
+## Planned work
+
+- Select a calibration method and prepare a small test dataset.
+- Build and test a ROS 2 workflow.
+- Record the calibration error and any steps that still need manual work.
+
+## Current status
+
+No software or results are provided in this example. Add a code or video link
+when your supervisor has approved it for public release.

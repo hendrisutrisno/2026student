@@ -1,24 +1,29 @@
 ---
 order: 1
-title: "Robust Multi-Camera Pose Estimation"
+title: "Example: Multi-camera pose estimation"
 date: 2026-10-01
 tags:
+  - "Example project"
   - "Computer Vision"
-  - "PyTorch"
-  - "Preprint 2026"
 image: /assets/photos/showcase-project-1.png
-summary: "An end-to-end deep learning framework for real-time 3D pose estimation and spatial tracking under dynamic object occlusions."
-links:
-  - label: "Read Abstract"
-    url: "#"
-  - label: "Code Repository"
-    url: "https://github.com/"
+summary: "This example shows how to describe a study of 3D pose estimation when objects block a camera view. Replace it with your own approved research summary."
+links: []
 ---
 
-# Robust Multi-Camera Pose Estimation
+## Example project
 
-This research focuses on solving spatial occlusion and trajectory jitter in multi-camera tracking systems within the CSDI robotics lab.
+This is fictional demonstration content, not a report of completed CSDI Lab research.
 
-## Key Contributions
-- Formulated an occlusion-aware temporal filtering mechanism.
-- Evaluated performance across dynamic physical obstacles with sub-centimeter accuracy.
+## Research question
+
+How can several camera views help estimate a person's pose when one view is blocked?
+
+## Planned method
+
+Compare a baseline model with a method that uses information from earlier frames.
+Record the dataset, evaluation method, and limits of each experiment.
+
+## Results
+
+No results are reported in this example. Add measured results only after completing
+and checking your experiments.

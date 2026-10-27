@@ -11,13 +11,12 @@ import base64
 import datetime as dt
 import hashlib
 import html
+import io
 import json
 import os
 from pathlib import Path
 import re
 import secrets
-import subprocess
-import sys
 from html.parser import HTMLParser
 from urllib.parse import unquote, urlsplit
 
@@ -43,9 +42,10 @@ IMAGE_MIME_TYPES = {
 }
 THEME_BOOTSTRAP = '''<script>
 (function() {
-  var saved = localStorage.getItem("theme");
+  var saved;
+  try { saved = localStorage.getItem("theme"); } catch (error) {}
   var prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-  document.documentElement.setAttribute("data-theme", saved || (prefersDark ? "dark" : "light"));
+  document.documentElement.setAttribute("data-theme", saved === "dark" || saved === "light" ? saved : (prefersDark ? "dark" : "light"));
 })();
 </script>'''
 THEME_TOGGLE = '''<script>
@@ -56,7 +56,7 @@ THEME_TOGGLE = '''<script>
     var current = document.documentElement.getAttribute("data-theme");
     var next = current === "dark" ? "light" : "dark";
     document.documentElement.setAttribute("data-theme", next);
-    localStorage.setItem("theme", next);
+    try { localStorage.setItem("theme", next); } catch (error) {}
   });
 })();
 </script>'''
@@ -73,6 +73,10 @@ def encrypted_image_uri(source_note: Path, src: str) -> str:
         raise ValueError(f"Image source must be a local file under meetings/assets: {src}")
 
     media_root = MEETING_MEDIA.resolve()
+    try:
+        media_root.relative_to(SOURCES.resolve())
+    except ValueError:
+        raise ValueError("Meeting assets must stay inside the meetings directory.") from None
     image_path = (source_note.parent / unquote(uri.path)).resolve()
     try:
         image_path.relative_to(media_root)
@@ -86,9 +90,9 @@ def encrypted_image_uri(source_note: Path, src: str) -> str:
     if not image_path.is_file():
         raise ValueError(f"Meeting image not found: {src}")
 
-    image = image_path.read_bytes()
-    if len(image) > MAX_IMAGE_BYTES:
+    if image_path.stat().st_size > MAX_IMAGE_BYTES:
         raise ValueError(f"Meeting image is larger than {MAX_IMAGE_BYTES // (1024 * 1024)} MiB: {src}")
+    image = image_path.read_bytes()
     return f"data:{mime_type};base64,{b64(image)}"
 
 
@@ -147,30 +151,36 @@ def inline_private_images(source_note: Path, rendered_html: str) -> str:
 
 
 def render_rst(path: Path) -> str:
+    # A symlink must not turn a meeting source into an arbitrary local file read.
+    if path.resolve().parent != SOURCES.resolve():
+        raise ValueError("Meeting sources must stay directly inside the meetings directory.")
     text = path.read_text(encoding="utf-8")
     try:
         from docutils.core import publish_parts
+        from docutils.writers.html5_polyglot import Writer
+        from docutils.utils import SystemMessage
     except ImportError:
-        # Convenient for local preview where pandoc is already installed.
-        if not __import__("shutil").which("pandoc"):
-            raise SystemExit("Install docutils: python -m pip install docutils")
-        rendered = subprocess.check_output(
-            ["pandoc", "--from=rst", "--to=html", "--mathjax", "--standalone=false"],
-            input=text.encode("utf-8"),
-        ).decode("utf-8")
-        return inline_private_images(path, rendered)
-    parts = publish_parts(
-        source=text,
-        writer_name="html5",
-        settings_overrides={
-            "raw_enabled": False,
-            "file_insertion_enabled": False,
-            "report_level": 4,
-            "halt_level": 6,
-            "syntax_highlight": "none",
-            "math_output": "mathjax",
-        },
-    )
+        # Alternate renderers do not enforce the same raw/include restrictions.
+        raise SystemExit("Install docutils: python -m pip install 'docutils>=0.20,<0.23'") from None
+    try:
+        parts = publish_parts(
+            source=text,
+            writer=Writer(),
+            settings_overrides={
+                "raw_enabled": False,
+                "file_insertion_enabled": False,
+                # Diagnostics can contain private source text. Never send them to CI logs.
+                "warning_stream": io.StringIO(),
+                "report_level": 2,
+                "halt_level": 2,
+                "syntax_highlight": "none",
+                "math_output": "mathjax https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js",
+            },
+        )
+    except SystemMessage as exc:
+        match = re.match(r"<string>:(\d+):", str(exc))
+        location = f" near line {match.group(1)}" if match else ""
+        raise ValueError(f"Invalid reStructuredText{location}. Check headings, indentation, and directives; raw HTML and includes are disabled.") from None
     return inline_private_images(path, parts["html_body"])
 
 
@@ -210,7 +220,7 @@ def note_document(label: str, inner: str) -> str:
       }}
     }};
   </script>
-  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js"></script>
 </head>
 <body>
   <main class="shell note-body" style="padding-top:38px;padding-bottom:75px">
@@ -257,7 +267,7 @@ def encrypted_page(label: str, plaintext: str, password: str) -> str:
     label {{display:block;font-weight:650;font-size:14px;margin-bottom:8px}}
     input {{display:block;width:100%;border:1px solid var(--border-2, var(--border-strong, #b0c4c2));border-radius:8px;padding:12px;font:inherit;background:var(--surface-2);color:var(--ink)}}
     input:focus {{outline:2px solid var(--teal, var(--accent, #176d69));outline-offset:1px}}
-    #button {{background:var(--teal, var(--accent, #176d69));color:white;border:0;border-radius:8px;padding:12px 16px;font-size:15px;font-weight:700;cursor:pointer;margin-top:14px;width:100%}}
+    #button {{background:var(--teal, var(--accent, #176d69));color:var(--on-accent, #fff);border:0;border-radius:8px;padding:12px 16px;font-size:15px;font-weight:700;cursor:pointer;margin-top:14px;width:100%}}
     #button:hover {{background:var(--teal-dark, var(--accent-dark, #0b5753))}}
     #button:disabled {{opacity:.6;cursor:wait}}
     .back {{display:block;margin-top:22px;color:var(--teal, var(--accent, #176d69));font-size:13px}}
@@ -348,7 +358,7 @@ def main() -> None:
         try:
             rendered_note = render_rst(path)
         except ValueError as exc:
-            raise SystemExit(f"{path.name}: {exc}") from exc
+            raise SystemExit(f"{path.name}: {exc}") from None
         doc = note_document(path.stem, rendered_note)
         locked = encrypted_page(path.stem, doc, password)
         (PUBLIC_NOTES / (path.stem + ".html")).write_text(locked, encoding="utf-8")

@@ -2,48 +2,84 @@ name: Publish graduate journey
 
 on:
   push:
-    branches: [main]
   workflow_dispatch:
 
 permissions:
   contents: read
-  pages: write
-  id-token: write
 
 concurrency:
-  group: github-pages
+  group: github-pages-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
   build:
+    if: github.event_name == 'workflow_dispatch' || github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: read
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
+      - name: Check source privacy
+        env:
+          REPOSITORY_VISIBILITY: ${{ github.event.repository.visibility }}
+          ALLOW_PUBLIC_MEETING_SOURCES: ${{ vars.ALLOW_PUBLIC_MEETING_SOURCES }}
+        run: |
+          if [ "$REPOSITORY_VISIBILITY" != "private" ] && [ "$ALLOW_PUBLIC_MEETING_SOURCES" != "true" ]; then
+            echo "::error::Meeting source files are public. Use a private repository for confidential notes, or set ALLOW_PUBLIC_MEETING_SOURCES=true for public examples only."
+            exit 1
+          fi
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
       - name: Install reStructuredText and encryption dependencies
-        run: python -m pip install 'docutils>=0.20,<0.23' 'cryptography>=43,<48'
+        run: python -m pip install -r requirements.txt
       - name: Generate encrypted meeting pages
         env:
           MEETING_PASSWORD: ${{ secrets.MEETING_PASSWORD }}
         run: python scripts/build_protected_meetings.py
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
+        id: pages
+      - name: Set the build address from GitHub Pages
+        env:
+          PAGES_ORIGIN: ${{ steps.pages.outputs.origin }}
+          PAGES_BASE_PATH: ${{ steps.pages.outputs.base_path }}
+        run: |
+          python - <<'PY'
+          import json, os, re
+          from pathlib import Path
+          path = Path('docs/_config.yml')
+          text = path.read_text(encoding='utf-8')
+          for key, value in [('url', os.environ['PAGES_ORIGIN']), ('baseurl', os.environ['PAGES_BASE_PATH'])]:
+              text, count = re.subn(r'(?m)^' + key + r':[^\n]*$', lambda match: key + ': ' + json.dumps(value), text)
+              if count != 1:
+                  raise SystemExit('Expected one ' + key + ' setting in docs/_config.yml')
+          path.write_text(text, encoding='utf-8')
+          PY
       - name: Build public Jekyll site from docs only
         uses: actions/jekyll-build-pages@v1
         with:
           source: ./docs
           destination: ./_site
+      - name: Validate public files and links
+        env:
+          PAGES_ORIGIN: ${{ steps.pages.outputs.origin }}
+          PAGES_BASE_PATH: ${{ steps.pages.outputs.base_path }}
+        run: python scripts/check_site.py _site --url "$PAGES_ORIGIN" --baseurl "$PAGES_BASE_PATH"
       - name: Upload public site artifact
         uses: actions/upload-pages-artifact@v4
         with:
           path: ./_site
   deploy:
+    if: github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
     needs: build
     runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}

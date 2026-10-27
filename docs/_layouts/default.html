@@ -7,9 +7,10 @@
   <title>{{ page.title | default: site.title | escape }} | {{ site.student.name | escape }}</title>
   <script>
     (function() {
-      var saved = localStorage.getItem('theme');
+      var saved;
+      try { saved = localStorage.getItem('theme'); } catch (error) {}
       var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      document.documentElement.setAttribute('data-theme', saved || (prefersDark ? 'dark' : 'light'));
+      document.documentElement.setAttribute('data-theme', saved === 'dark' || saved === 'light' ? saved : (prefersDark ? 'dark' : 'light'));
     })();
   </script>
   <link rel="stylesheet" href="{{ '/assets/style.css' | relative_url }}">
@@ -21,10 +22,20 @@
       <a class="brand" href="{{ '/' | relative_url }}"><span class="brand-mark">C</span> CSDI Lab <span class="brand-light">/ Student Journey</span></a>
       <nav aria-label="Primary navigation">
         <a href="{{ '/' | relative_url }}">Home</a>
-        <button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark/light mode" title="Toggle theme"><i class="theme-icon" aria-hidden="true"></i></button>
+        <a href="{{ '/meetings/' | relative_url }}">Meetings</a>
+        <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Toggle dark/light mode" title="Toggle theme"><i class="theme-icon" aria-hidden="true"></i></button>
       </nav>
     </header>
-    <main id="main">{{ content }}</main>
+    <main id="main" tabindex="-1">
+      {% if page.collection == 'showcases' %}
+        <div class="eyebrow">RESEARCH SHOWCASE</div>
+        {% unless content contains '<h1' %}<h1 class="page-heading">{{ page.title | escape }}</h1>{% endunless %}
+      {% endif %}
+      {{ content }}
+      {% if page.collection == 'showcases' %}
+        <p class="backlink"><a href="{{ '/#showcase-title' | relative_url }}">&#8592; Back to research showcase</a></p>
+      {% endif %}
+    </main>
     <footer class="site-footer">
       <span>{{ site.student.name | escape }} &middot; {{ site.student.lab | escape }} &middot; {{ site.student.university | escape }}</span>
       <span>Updated through GitHub</span>
@@ -37,7 +48,7 @@
         var current = document.documentElement.getAttribute('data-theme');
         var next = current === 'dark' ? 'light' : 'dark';
         document.documentElement.setAttribute('data-theme', next);
-        localStorage.setItem('theme', next);
+        try { localStorage.setItem('theme', next); } catch (error) {}
       });
     })();
   </script>

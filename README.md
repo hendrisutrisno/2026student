@@ -1,142 +1,150 @@
-# CSDI Lab — Graduate Research Journey (Student Template)
+# CSDI Lab graduate research journey
 
-A ready-to-use template for graduate students (Master's & PhD) at **CSDI Lab, National Taipei University of Technology (NTUT)**. It publishes your academic profile, semester timeline, research showcase, and password-protected meeting notes as a clean website hosted on **GitHub Pages** for free.
+A GitHub Pages template for graduate students at CSDI Lab, National Taipei University of Technology. It shows a public profile, semester timeline, research projects, and a list of encrypted meeting notes.
 
-> **New to GitHub?** Don't worry. This guide walks you through every step from zero using the GitHub website — no command line or programming required for daily updates.
+Edit your profile in YAML and your research content in Markdown or reStructuredText. Daily updates do not require HTML, CSS, or JavaScript.
 
----
+## 1. Choose the right repository visibility
 
-## What the website looks like
+**Use a private source repository for confidential meeting notes.** Encryption protects the published meeting pages. It does not hide files or Git history in a public GitHub repository.
 
-| Page | What's on it |
-|---|---|
-| **Home** | Your profile, academic milestones (Semester 1–4), and research showcase |
-| **Regular meetings** | A public list of meeting dates; each opens a password-protected note |
-| **Research showcase** | Featured projects, demos, publications, or thesis progress |
+- GitHub Pages is available in public repositories on GitHub Free. Pages from a private repository requires a supported paid plan, such as GitHub Pro or Team. Check [GitHub Pages availability](https://docs.github.com/en/pages/getting-started-with-github-pages/about-github-pages).
+- A private source repository normally publishes a **public website**. Private website access is a separate feature for eligible organizations. Do not assume visitors need a GitHub login.
+- The template contains fictional examples. Replace them before presenting the site as your own work.
+- Profile details, public images, project pages, meeting dates, and encrypted meeting files are public. Keep confidential material outside `docs/`.
+- Use a public source repository only for fictional or approved public notes. The workflow stops for public sources unless you explicitly set the Actions repository variable `ALLOW_PUBLIC_MEETING_SOURCES` to `true`. This setting does not make source notes private.
 
----
+## 2. Create your student repository
 
-## Step 0 — What you need before starting
+1. Sign in to GitHub.
+2. Open the lab template and select **Use this template > Create a new repository**.
+3. Choose your account and a short repository name, such as `2026yourname`.
+4. Choose **Private** if you will keep real meeting notes in this repository.
+5. Create the repository.
 
-- A **GitHub account** (free) — sign up at [github.com](https://github.com) if you don't have one.
-- A web browser with internet access.
-- That's it. You can edit everything directly on the GitHub website.
+If **Use this template** is missing, ask the lab maintainer to enable **Settings > General > Template repository** on the source. You can also download its ZIP, create an empty repository, and upload all project files, including `.github/workflows/publish.yml`. Check that the workflow file is present after uploading.
 
----
+## 3. Set up your public profile
 
-## Step 1 — Create your own repository from this template
-
-> A **repository** (or "repo") is like a folder on GitHub that stores your project files and tracks all changes.
-
-1. On the GitHub page for this template repo, click the green **"Use this template"** button (near the top-right) → then **"Create a new repository"**.
-2. **Owner**: Select your GitHub account (or supervisor's organization as instructed).
-3. **Repository name**: Choose something short and lowercase, such as `2026yourname` (e.g. `2026verin` or `2026student`).
-   - ⚠️ **Avoid spaces, uppercase letters, or special symbols.**
-4. **Visibility**: Select **Private** — this keeps your raw meeting notes, draft writing, and research files private.
-5. Click **"Create repository"**. GitHub copies all files into your new repo.
-
----
-
-## Step 2 — Fill in your profile (`docs/_config.yml`)
-
-This file configures your website name, link addresses, and profile details shown on the homepage.
-
-1. In your new repo, click into the `docs/` folder → click on `_config.yml`.
-2. Click the **pencil icon ✏️** (top-right of the file view) to edit.
-3. Update the fields below:
+Open `docs/_config.yml`, select **Edit**, and update the `student` fields. Save with **Commit changes** on your repository's default branch. A commit records a saved version of a file.
 
 ```yaml
 title: Graduate Research Journey
-url: "https://yourusername.github.io"   # ← replace with your GitHub username
-baseurl: "/2026yourname"                # ← MUST match your repository name exactly!
+url: "https://yourusername.github.io"
+baseurl: "/2026yourname"
 
 student:
   name: "Your Full Name"
-  degree: "Master's Student"            # e.g. "Master's Student" or "PhD Student"
+  email: "your.email@example.com" # Leave empty to hide the email link.
+  degree: "Master's Student"
   lab: "CSDI Lab"
   university: "National Taipei University of Technology"
   joined: "2026"
-  interests: "Computer Vision, Autonomous Systems, Deep Learning"
-  summary: "A short 1–2 sentence introduction about your research direction."
+  interests: "Your research interests"
+  summary: "Describe your research direction in one or two sentences."
+  # photo: /assets/photos/profile.jpg
 ```
 
-> ⚠️ **CRITICAL**: `baseurl` must start with a slash `/` and match your exact repository name (e.g., `/2026verin`). If this does not match, the website CSS and styles will fail to load!
+Use spaces for indentation, not tabs. Keep quotation marks around text containing a colon. `degree` is your current student status; use, for example, `Master's Student` or `PhD Student`.
 
-4. Scroll down and click **"Commit changes"** → **"Commit directly to the main branch"** → **"Commit changes"**.
+`docs/_config.yml` is the only site configuration file. The publishing workflow gets the correct website address from GitHub Pages, so a copied repository can use a different owner or name without editing code. Set `url` and `baseurl` in this file for local preview. For a user site named `yourusername.github.io`, use `baseurl: ""`. For a project site, use `/repository-name` without a final slash.
 
-> **Committing** is just GitHub's term for "saving". Every commit records what changed and when, so you can always go back.
+Set `student.email` to the contact address you want to publish. It appears as a clickable contact link in your profile. Replace the example address with your own. Leave it empty (`email: ""`) or remove the field to hide it. This address is public.
 
+To add a profile photo, upload it to `docs/assets/photos/` and set `student.photo` to `/assets/photos/profile.jpg`. Remove or comment out `photo` to use your initial instead. Images here are public.
+
+## 4. Set the meeting password
+
+1. Open **Settings > Secrets and variables > Actions**.
+2. Under **Secrets**, select **New repository secret**.
+3. Name it `MEETING_PASSWORD`.
+4. Use a long, unique password. Share it privately with your supervisor.
+5. Save the secret.
+
+Do not put the password in a file, commit message, public issue, or workflow command. GitHub does not let you read a saved secret back. Keep a separate private copy.
+
+For a public demonstration repository only, open the **Variables** tab and set `ALLOW_PUBLIC_MEETING_SOURCES` to `true`. In a public repository, source files and their history are already public, regardless of the meeting password.
+
+## 5. Publish with GitHub Pages
+
+1. Open **Settings > Pages**.
+2. Under **Build and deployment**, set **Source** to **GitHub Actions**.
+3. Open **Actions > Publish graduate journey**.
+4. Select **Run workflow** and choose your default branch.
+5. Wait for both the build and deployment jobs to finish successfully.
+6. Open the website URL shown by the deployment.
+
+Future changes on the default branch publish automatically. A manual run on another branch builds for checking and does not deploy. No branch name is hardcoded. If GitHub asks to approve a deployment in the `github-pages` environment, review and approve it as the repository owner.
+
+## 6. Update your research journey
+
+The site uses files in `docs/` as its public source. Keep private notes in the root `meetings/` folder.
+
+### Semester timeline
+
+Edit files in `docs/_semesters/`. To add a semester, copy `_templates/semester.md` to a new file such as `docs/_semesters/05-semester.md`.
+
+```yaml
 ---
-
-## Step 3 — Set your meeting password (Secret)
-
-Meeting notes are encrypted with AES-256-GCM. A password secret is required so only you and your supervisor can unlock them.
-
-1. In your repository, click the **Settings** tab (top menu bar).
-2. In the left sidebar, click **Secrets and variables** → **Actions**.
-3. Click the green **"New repository secret"** button.
-4. Set:
-   - **Name**: `MEETING_PASSWORD`
-   - **Secret**: Choose a strong, private password and share it with your advisor. (Do **not** use simple passwords like `hope` for real research).
-5. Click **"Add secret"**.
-
-> Repository secrets are securely hidden by GitHub. They are never published and cannot be viewed by visitors.
-
+order: 5
+period: "Semester 5"
+title: "Evaluating the method"
+description: "Describe the experiments and the progress made this semester."
+# image: /assets/photos/experiment.png
+# caption: "Describe the public figure."
 ---
+```
 
-## Step 4 — Turn on the website (GitHub Pages)
+Use a different number in `order` for each card. Cards are sorted by this field. Edit the fields above the second `---`; the timeline does not display text written below them. Add as many semesters as you need for your program.
 
-1. In **Settings** → click **Pages** in the left sidebar.
-2. Under **"Build and deployment"**:
-   - Set **Source** to **GitHub Actions**.
-3. Click the **Actions** tab (top menu bar).
-4. Click **"Publish graduate journey"** in the left workflow list → click the **"Run workflow"** button → confirm **"Run workflow"**.
-5. Wait 1–2 minutes. When you see a green checkmark ✅, your site is live!
-6. Visit your website at:
-   ```text
-   https://yourusername.github.io/2026yourname/
-   ```
+### Research showcase
 
----
+Copy `_templates/showcase.md` to `docs/_showcases/your-project.md`. Set its title, order, date, tags, and summary. Use `links: []` until you have real, approved public links. You can then replace it with:
 
-## Step 5 — Prepare and add a regular meeting note ⭐
+```yaml
+links:
+  - label: "Code"
+    url: "https://github.com/yourusername/your-project"
+```
 
-Before each supervision meeting, prepare a structured meeting note:
+Write longer project details below the second `---`. They appear on a separate project page linked from the showcase card. Describe planned work as planned work. Report only measured results, and do not claim a paper or software release before it exists.
 
-1. Click on `_templates/` → open `regular-meeting.rst` → copy all text.
-2. Go to the `meetings/` folder (at the root of your repo, **not** inside `docs/`).
-3. Click **"Add file"** → **"Create new file"**.
-4. Name the file using the meeting date format: `YYYY-MM-DD.rst` (e.g. `2026-11-04.rst`).
-5. Paste the template content and fill in:
-   - **Sections 1–4**: Fill in at least 24 hours before your meeting (progress, learnings, questions).
-   - **Section 5**: Complete after the meeting (agreed decisions and next steps).
-6. Click **"Commit changes"**.
+Optional image paths start with `/assets/photos/`, not with the repository name. Upload each image before using its path. Leave unused image fields commented out to avoid broken images. Do not edit the generated HTML pages.
 
-GitHub Actions will automatically encrypt the note, add the date to the meeting list, and deploy it securely!
+## 7. Keep a meeting record
 
-### Adding private figures or photos to a meeting note
+1. Copy `_templates/regular-meeting.rst`.
+2. Create `meetings/YYYY-MM-DD.rst` using the meeting date, such as `meetings/2026-11-04.rst`.
+3. Set your name and date. Complete sections 1-4 before the meeting.
+4. After the meeting, add decisions and agreed tasks to section 5.
+5. Save the file on the default branch. The workflow builds and encrypts it.
 
-- Store images inside `meetings/assets/` (e.g. `meetings/assets/2026-11-04-results.png`).
-- Reference them in your `.rst` file like this:
+The filename must be a valid date followed by `.rst`. The filename supplies the public meeting date. The two included notes are fictional; remove or replace them when you set up your site. They do not create a recurring meeting schedule.
+
+### Private meeting figures
+
+Store private figures in `meetings/assets/`, outside `docs/`, in a **private repository**. Supported formats are `.png`, `.jpg`, `.jpeg`, `.webp`, and `.gif`; each file must be at most 8 MiB. Refer to an uploaded file using a relative path:
 
 ```rst
 .. figure:: assets/2026-11-04-results.png
-   :alt: Model convergence graph
+   :alt: Training and validation loss over 100 epochs
    :width: 720px
    :align: center
 
-   Training and validation loss curve over 100 epochs.
+   Compare training and validation loss.
 ```
 
-- Each image must be under 8 MB (`.png`, `.jpg`, `.jpeg`, `.webp`, `.gif`).
-- The build script converts the image into encrypted data inside the page ciphertext. **No unencrypted image file is ever published to the public website.**
+The builder includes the figure inside the encrypted note. It does not publish the original image separately. Remote images and paths outside `meetings/assets/` are not supported for private figures.
 
-### Adding math equations to a meeting note
+### Equations
 
-You can write standard LaTeX math formulas directly in your `.rst` note:
+Use inline math such as:
 
-- **Inline math formula**: `:math:`E = mc^2`` or `:math:`\mathbf{x} \in \mathbb{R}^n``
-- **Block equation**:
+```rst
+The error is :math:`E = mc^2`.
+```
+
+Use a separate directive for a displayed equation:
 
 ```rst
 .. math::
@@ -144,128 +152,103 @@ You can write standard LaTeX math formulas directly in your `.rst` note:
    \mathbf{x}_{t+1} = A \mathbf{x}_t + B \mathbf{u}_t
 ```
 
-MathJax 3 automatically renders clean mathematical typography with scrollable support when unlocked.
+MathJax renders equations after the note is unlocked. An internet connection is needed for the external MathJax script. This script runs inside the unlocked page. Use an access-controlled service for highly sensitive records.
 
----
+## 8. Optional local preview
 
-## Step 6 — Add or edit semesters & research showcases (.md files) ⭐
-
-Just like the highlights in the internship site, you **never need to edit HTML**. Every semester and research showcase is a simple Markdown (`.md`) file with front matter fields. The homepage updates automatically.
-
-### 1. Change your profile image in the header
-
-By default, the header shows an abstract monogram graphic. To use your own photo instead:
-
-1. Upload your photo to `docs/assets/photos/` (e.g. `docs/assets/photos/profile.jpg`).
-2. Open `docs/_config.yml`, add or uncomment `photo:` under `student:`:
-   ```yaml
-   student:
-     name: "Jane Doe"
-     degree: "Master's Student"
-     photo: /assets/photos/profile.jpg   # ← path to your photo
-     lab: "CSDI Lab"
-   ```
-3. Commit the changes. If you remove or comment out `photo`, it automatically reverts to the monogram graphic.
-
-### 2. Manage semesters (`docs/_semesters/*.md`)
-
-Each semester card on your homepage timeline is generated from a file in `docs/_semesters/`:
-
-1. To edit an existing semester (e.g. Semester 1), open `docs/_semesters/01-semester.md` and click the **pencil icon ✏️**.
-2. To add a new semester (e.g. Semester 5), copy `_templates/semester.md` and create `docs/_semesters/05-semester.md`.
-3. Fill in the fields:
-   ```yaml
-   ---
-   order: 1
-   period: "Semester 1"
-   title: "Building foundations"
-   description: "Python, statistical learning, literature review, and baseline experiments."
-   image: /assets/photos/semester-1-sample.png   # Optional: photo or chart
-   caption: "Literature review & baseline experiment setup" # Optional caption
-   ---
-   ```
-4. If you don't have a photo for that semester, simply delete or omit the `image:` and `caption:` lines.
-
-### 3. Manage research showcases (`docs/_showcases/*.md`)
-
-Each card in your **Research Showcase** is generated from a file in `docs/_showcases/`:
-
-1. Open `_templates/showcase.md` and copy the content.
-2. In `docs/_showcases/`, click **"Add file"** → **"Create new file"**.
-3. Name it after your project (e.g. `robot-navigation.md` or `01-pose-estimation.md`).
-4. Fill in the fields:
-   ```yaml
-   ---
-   order: 1
-   title: "Autonomous Mobile Robot Navigation"
-   date: 2026-10-01
-   tags:
-     - "Robotics"
-     - "ROS 2"
-     - "Master's Thesis"
-   image: /assets/photos/your-project.png   # Optional: cover image
-   summary: "A 2–3 sentence overview of the research problem, methodology, and key results."
-   links:
-     - label: "Code Repository"
-       url: "https://github.com/yourusername/repo"
-     - label: "Read Paper"
-       url: "https://arxiv.org/abs/..."
-   ---
-   ```
-5. *(Optional)* You can write longer research notes, detailed results, equations, and figures below the `---` line. A **Read Details →** link will automatically appear on the showcase card so visitors can view the full project page!
-6. Click **"Commit changes"**. The showcase card will appear immediately on the homepage.
-
----
-
-## Repository layout
+Daily editing can use the GitHub website. Local preview requires Git, Python, Ruby, and Bundler. Use the [Jekyll installation instructions](https://jekyllrb.com/docs/installation/) for your operating system. On Windows, install the full **RubyInstaller with Devkit** and complete its MSYS2 development tool setup; a portable Ruby executable alone cannot install all required native gems. Follow the [Windows setup guide](https://jekyllrb.com/docs/installation/windows/). Clone **your own repository**, then open its folder in a terminal.
 
 ```text
-2026yourname/
-├── .github/workflows/publish.yml      # Auto-builds encrypted site — don't edit
-├── .gitignore                         # Prevents accidental leak of local cache
-├── docs/                              # ← Everything here is PUBLIC on your website
-│   ├── _config.yml                    # Your profile settings & baseurl
-│   ├── _layouts/default.html          # Page layout & dark/light theme toggle
-│   ├── _data/meetings.json            # Auto-generated meeting date list
-│   ├── _semesters/                    # ← Add/edit semester cards here (.md files)
-│   │   ├── 01-semester.md
-│   │   ├── 02-semester.md
-│   │   ├── 03-semester.md
-│   │   └── 04-semester.md
-│   ├── _showcases/                    # ← Add research showcase cards here (.md files)
-│   │   ├── 01-pose-estimation.md
-│   │   └── 02-sensor-calibration.md
-│   ├── _templates/                    # Templates for semesters & showcases
-│   ├── assets/
-│   │   ├── photos/                    # Public photos (profile, semester, showcase)
-│   │   └── style.css                  # Website design stylesheet & fonts
-│   ├── index.md                       # Public homepage (auto-reads collections)
-│   └── meetings/index.html            # Public meeting list index
-├── meetings/                          # ← PRIVATE raw meeting notes (.rst files)
-│   ├── assets/                        # Private meeting images (never published directly)
-│   └── 2026-10-21.rst                 # Example meeting note
-├── research/                          # ← PRIVATE code, notebooks, datasets, drafts
-├── scripts/build_protected_meetings.py# Encrypts notes with AES-256-GCM + MathJax
-├── _templates/                        # Copyable templates for meetings, semesters, showcases
-└── README.md
+python -m venv .venv
 ```
 
----
+Activate the environment:
 
-## Troubleshooting
+- Windows PowerShell: `.venv\Scripts\Activate.ps1`
+- macOS or Linux: `source .venv/bin/activate`
 
-| Problem | Cause | How to fix |
-|---|---|---|
-| **Website has no styling / broken layout** | `baseurl` in `docs/_config.yml` doesn't match repo name | Open `docs/_config.yml`, set `baseurl: "/your-repo-name"`, save, and re-run workflow. |
-| **Meeting page password error** | Wrong password entered | Enter the exact secret string you set in `MEETING_PASSWORD`. |
-| **Build fails (red ❌ in Actions)** | Missing secret | Go to **Settings > Secrets and variables > Actions** and ensure `MEETING_PASSWORD` is created. |
-| **Dark / light mode icon not showing** | `_site/` folder was uploaded to GitHub | Never commit or upload `_site/` to GitHub. It is already excluded in `.gitignore`. |
-| **Meeting note not appearing** | File has incorrect extension or location | File must be in `meetings/` (not `docs/`) and named `YYYY-MM-DD.rst`. |
+If PowerShell blocks environment activation, use `.venv\Scripts\python.exe` in place of `python` for the Python commands below.
 
----
+Install dependencies:
 
-## Privacy & Security Reminders
+```text
+python -m pip install -r requirements.txt
+bundle install
+```
 
-- **Everything in `docs/` is public**: Anyone with your website link can see files in `docs/`. Never put confidential data, private tokens, or unencrypted research notes in `docs/`.
-- **`meetings/` and `research/` stay private**: In your private repository, your `.rst` sources and research notebooks remain accessible only to you and your advisor.
-- **Meeting encryption**: Only the encrypted ciphertext is published to GitHub Pages. Visitors cannot read notes without the `MEETING_PASSWORD`.
+Set the meeting password without writing it into shell history. In PowerShell:
+
+```powershell
+$meetingCredential = New-Object System.Management.Automation.PSCredential ('local', (Read-Host 'Meeting password' -AsSecureString))
+$env:MEETING_PASSWORD = $meetingCredential.GetNetworkCredential().Password
+python scripts/build_protected_meetings.py
+Remove-Item Env:MEETING_PASSWORD
+```
+
+In Bash:
+
+```bash
+read -rs -p "Meeting password: " MEETING_PASSWORD; echo
+export MEETING_PASSWORD
+python scripts/build_protected_meetings.py
+unset MEETING_PASSWORD
+```
+
+Then preview the public site:
+
+```text
+bundle exec jekyll serve --source docs --destination _site
+```
+
+Open `http://localhost:4000/2026yourname/`, using the `baseurl` you set in `docs/_config.yml`. Run the meeting builder again after changing a note; Jekyll alone does not encrypt notes. Restart Jekyll after changing the configuration. Keep `_site/`, `.venv/`, generated meeting HTML, and passwords out of Git.
+
+Before sharing changes, stop the preview with `Ctrl+C` and run the checks:
+
+```text
+python -m unittest discover -s tests
+bundle exec jekyll build --source docs --destination _site
+python scripts/check_site.py _site --url "https://yourusername.github.io" --baseurl "/2026yourname"
+```
+
+Use your configured `url` and `baseurl` in the last command. Use `--baseurl ""` for a user site or a custom domain without a repository path. Build the meeting pages first, as shown above. The checks cover encryption, private-file boundaries, and local website links; they do not check whether external websites remain available.
+
+
+## Files to edit
+
+| File or folder | Purpose |
+|---|---|
+| `docs/_config.yml` | Public profile and local preview address |
+| `docs/_semesters/*.md` | Semester timeline cards |
+| `docs/_showcases/*.md` | Public project cards and detailed pages |
+| `docs/assets/photos/` | Approved public photos and figures |
+| `meetings/YYYY-MM-DD.rst` | Meeting sources; private only in a private repository |
+| `meetings/assets/` | Private meeting figures in a private repository |
+| `_templates/` | Copyable source templates |
+| `scripts/build_protected_meetings.py` | Builds encrypted meeting pages |
+| `.github/workflows/publish.yml` | Builds and publishes the website |
+
+`docs/_data/meetings.json` and dated HTML files in `docs/meetings/` are generated. Do not edit or commit generated output. Keep any private code, drafts, or datasets outside `docs/`, for example in a root `research/` folder in your private repository.
+
+## Troubleshooting and privacy limits
+
+| Problem | Check |
+|---|---|
+| Pages setting is unavailable | Confirm repository visibility and GitHub plan. |
+| Workflow reports a missing password | Create the `MEETING_PASSWORD` repository secret. |
+| Public-source safety check fails | Keep real notes private; opt in only for public examples. |
+| A note fails to build | Check its date, RST syntax, image format, size, and file path. |
+| Site has no styling in local preview | Check `url`, `baseurl`, and the address opened in your browser. |
+| A card or photo does not update | Check the edited file location, then check the latest Actions run. |
+| An unlocked note does not show equations | Check your internet connection and external script blocking. |
+| You changed only the password secret | Run the workflow again; changing a secret does not trigger a build. |
+
+AES-256-GCM encrypts published notes. Anyone can download the ciphertext and try password guesses offline, so a strong password matters. Meeting dates and page addresses are public. Changing the password and rebuilding does not remove older downloaded ciphertext. Anyone with repository access can read the source notes. If private content was ever committed to a public repository, deleting the file in a later commit does not erase it from history; ask the maintainer to review the exposure.
+
+## Maintain this template
+
+Before sharing the template with students:
+
+1. Enable **Settings > General > Template repository** so students can use **Use this template**.
+2. Keep only fictional notes, example projects, and approved public images in the template. Check file history before making a repository public; deleting a file does not remove earlier copies.
+3. For a public demonstration, set `ALLOW_PUBLIC_MEETING_SOURCES` to `true` in **Settings > Secrets and variables > Actions > Variables**. Keep confidential student work in separate private repositories.
+4. Run the checks above after changing the layout, encryption script, or workflow. Review dependency updates and confirm that the example site still works.

@@ -11,7 +11,10 @@ title: Graduate Research Journey
     <h1>{{ site.student.name | escape }}</h1>
     <p class="lead">{{ site.student.summary | escape }}</p>
     <div class="metadata">
-      <span><strong>Affiliation:</strong> {{ site.student.lab | escape }} · NTUT</span>
+      {% assign student_email = site.student.email | default: '' | strip %}
+      {% if student_email != '' %}
+      <span><strong>Email:</strong> <a href="mailto:{{ student_email | escape }}">{{ student_email | escape }}</a></span>
+      {% endif %}
       <span><strong>Joined:</strong> {{ site.student.joined | escape }}</span>
       <span><strong>Research interests:</strong> {{ site.student.interests | escape }}</span>
     </div>
@@ -19,7 +22,7 @@ title: Graduate Research Journey
   </div>
   <div class="hero-graphic">
     {% if site.student.photo %}
-      <img class="hero-photo" src="{{ site.student.photo | relative_url }}" alt="{{ site.student.name | escape }}">
+      <img class="hero-photo" src="{{ site.student.photo | relative_url | escape }}" alt="{{ site.student.name | escape }}">
     {% else %}
       <div class="orb one" aria-hidden="true"></div><div class="orb two" aria-hidden="true"></div><div class="orb three" aria-hidden="true"></div>
       <span class="hero-monogram" aria-hidden="true">{{ site.student.name | slice: 0 | upcase }}</span>
@@ -33,7 +36,7 @@ title: Graduate Research Journey
       <span class="eyebrow">ACADEMIC DEVELOPMENT</span>
       <h2 id="journey-title">My Research Journey</h2>
     </div>
-    <p>Four broad stages guide my master's study.</p>
+    <p>My goals and progress across each semester.</p>
   </div>
   <div class="timeline">
     {% assign semesters = site.semesters | sort: "order" %}
@@ -46,7 +49,7 @@ title: Graduate Research Journey
         <p>{{ stage.description | default: stage.summary | escape }}</p>
         {% if stage.image %}
         <figure class="stage-figure">
-          <img src="{{ stage.image | relative_url }}" alt="{{ stage.title | escape }}" loading="lazy">
+          <img src="{{ stage.image | relative_url | escape }}" alt="{{ stage.title | escape }}" loading="lazy">
           {% if stage.caption %}
           <figcaption>{{ stage.caption | escape }}</figcaption>
           {% endif %}
@@ -72,7 +75,7 @@ title: Graduate Research Journey
     {% for item in showcases %}
     <article class="showcase-card">
       {% if item.image %}
-      <img class="showcase-img" src="{{ item.image | relative_url }}" alt="{{ item.title | escape }}" loading="lazy">
+      <img class="showcase-img" src="{{ item.image | relative_url | escape }}" alt="{{ item.title | escape }}" loading="lazy">
       {% endif %}
       <div class="showcase-content">
         {% if item.tags and item.tags.size > 0 %}
@@ -87,11 +90,18 @@ title: Graduate Research Journey
         <div class="showcase-links">
           {% if item.links and item.links.size > 0 %}
             {% for link in item.links %}
-            <a href="{{ link.url }}" target="_blank" rel="noopener">{{ link.label | escape }} &rarr;</a>
+            {% assign first_character = link.url | slice: 0 %}
+            {% if link.url contains '://' or link.url contains 'mailto:' or first_character == '#' %}
+              {% assign showcase_link = link.url %}
+            {% else %}
+              {% assign showcase_link = link.url | relative_url %}
+            {% endif %}
+            <a href="{{ showcase_link | escape }}">{{ link.label | escape }} &rarr;</a>
             {% endfor %}
           {% endif %}
-          {% if item.content and item.content.size > 20 %}
-            <a href="{{ item.url | relative_url }}">Read Details &rarr;</a>
+          {% assign details = item.content | strip_html | strip %}
+          {% if details != empty %}
+            <a href="{{ item.url | relative_url | escape }}" aria-label="Read details: {{ item.title | escape }}">Read Details &rarr;</a>
           {% endif %}
         </div>
       </div>
