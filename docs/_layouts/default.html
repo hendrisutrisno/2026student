@@ -30,6 +30,38 @@
       {% if page.collection == 'showcases' %}
         <div class="eyebrow">RESEARCH SHOWCASE</div>
         {% unless content contains '<h1' %}<h1 class="page-heading">{{ page.title | escape }}</h1>{% endunless %}
+        {% if page.video %}
+          {% assign v = page.video %}
+          {% if v contains 'youtube.com' or v contains 'youtu.be' %}
+            {% assign yt_id = v | split: 'v=' | last | split: '&' | first %}
+            {% if v contains 'youtu.be/' %}
+              {% assign yt_id = v | split: 'youtu.be/' | last | split: '?' | first %}
+            {% endif %}
+            <div class="video-embed">
+              <iframe src="https://www.youtube.com/embed/{{ yt_id }}"
+                title="{{ page.title | escape }} — video"
+                frameborder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen loading="lazy"></iframe>
+            </div>
+          {% elsif v contains 'vimeo.com' %}
+            {% assign vm_id = v | split: 'vimeo.com/' | last | split: '?' | first %}
+            <div class="video-embed">
+              <iframe src="https://player.vimeo.com/video/{{ vm_id }}"
+                title="{{ page.title | escape }} — video"
+                frameborder="0"
+                allow="autoplay; fullscreen; picture-in-picture"
+                allowfullscreen loading="lazy"></iframe>
+            </div>
+          {% else %}
+            <div class="video-local">
+              <video controls preload="metadata">
+                <source src="{{ v | relative_url }}" type="video/mp4">
+                Your browser does not support the video tag.
+              </video>
+            </div>
+          {% endif %}
+        {% endif %}
       {% endif %}
       {{ content }}
       {% if page.collection == 'showcases' %}

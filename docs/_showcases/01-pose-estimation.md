@@ -6,6 +6,7 @@ tags:
   - "Example project"
   - "Computer Vision"
 image: /assets/photos/showcase-project-1.png
+video: /assets/videos/demo.mp4
 summary: "This example shows how to describe a study of 3D pose estimation when objects block a camera view. Replace it with your own approved research summary."
 links: []
 ---

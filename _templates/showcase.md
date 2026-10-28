@@ -5,6 +5,11 @@ date: 2026-10-01
 tags:
   - "Your research topic"
 # image: /assets/photos/your-project.png
+# video: accepts YouTube / Vimeo URL  -OR-  a local file path:
+#   YouTube:  https://www.youtube.com/watch?v=VIDEO_ID
+#   Vimeo:    https://vimeo.com/VIDEO_ID
+#   Local:    /assets/videos/your-demo.mp4
+# video:
 summary: "State the research question, method, and current progress in two or three sentences."
 links: []
 # Replace links: [] with real, public links when they are ready:
