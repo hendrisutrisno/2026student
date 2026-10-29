@@ -20,8 +20,8 @@ defaults:
       layout: default
 
 student:
-  name: "Steven"
-  email: "steven.email@example.com" # Replace with your address, or leave empty to hide.
+  name: "Lucas"
+  email: "zac105437@gmail.com" # Replace with your address, or leave empty to hide.
   degree: "Master's Student"
   photo: /assets/photos/rec2025_1.png # Optional: uncomment and add your photo in docs/assets/photos/
   lab: "CSDI Lab"
